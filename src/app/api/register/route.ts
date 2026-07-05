@@ -20,17 +20,22 @@ export async function POST(request: Request) {
 
   const { name, email, password } = parsed.data;
 
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) {
-    return apiError("EMAIL_ALREADY_EXISTS");
+  try {
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return apiError("EMAIL_ALREADY_EXISTS");
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    const user = await prisma.user.create({
+      data: { name, email, passwordHash },
+      select: { id: true, email: true, name: true },
+    });
+
+    return NextResponse.json({ user }, { status: 201 });
+  } catch (error) {
+    console.error("Registration failed", error);
+    return apiError("GENERIC_ERROR");
   }
-
-  const passwordHash = await bcrypt.hash(password, 12);
-
-  const user = await prisma.user.create({
-    data: { name, email, passwordHash },
-    select: { id: true, email: true, name: true },
-  });
-
-  return NextResponse.json({ user }, { status: 201 });
 }
