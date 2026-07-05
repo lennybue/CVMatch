@@ -36,6 +36,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local dev artifacts from the old local-disk storage path (contains PII)
+/uploads
+
+# prisma
+/prisma/generated
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
