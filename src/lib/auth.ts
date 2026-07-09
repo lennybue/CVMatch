@@ -1,4 +1,3 @@
-import { cache } from "react";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
@@ -13,10 +12,15 @@ const SELECT = { id: true, email: true, name: true } satisfies Prisma.UserSelect
  * existing `session.user.id`-scoped query working unchanged — swap this
  * back for a real auth check if per-user accounts come back later.
  *
- * Wrapped in React's cache() so a page + its layout calling auth() in the
- * same request share one upsert instead of hitting the DB twice.
+ * Deliberately NOT wrapped in React's cache(): this is called from both
+ * Server Components (pages/layouts) and Route Handlers (API routes), and
+ * cache() only dedupes within a React render tree — Route Handlers aren't
+ * part of one. Mixing the two caused production-only failures that didn't
+ * reproduce in `next dev`. The upsert below is cheap and idempotent, so
+ * calling it twice per request (e.g. once in a layout, once in its page)
+ * is not worth the risk.
  */
-export const auth = cache(async () => {
+export async function auth() {
   try {
     const user = await prisma.user.upsert({
       where: { email: DEMO_USER_EMAIL },
@@ -39,6 +43,7 @@ export const auth = cache(async () => {
       });
       return { user };
     }
+    console.error("auth() failed to resolve the demo user", error);
     throw error;
   }
-});
+}
