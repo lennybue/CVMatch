@@ -17,9 +17,6 @@
   "nav": {
     "dashboard": "Dashboard",
     "applications": "Applications",
-    "logIn": "Log in",
-    "logOut": "Log out",
-    "getStarted": "Get started",
     "toggleTheme": "Toggle theme",
     "language": "Language"
   },
@@ -33,29 +30,6 @@
     "feature2Body": "Get an honest match score and ATS score against any job posting.",
     "feature3Title": "AI-optimized, fact-checked",
     "feature3Body": "Stronger wording and the right keywords — never invented experience."
-  },
-  "auth": {
-    "registerTitle": "Create your account",
-    "registerSubtitle": "Start tailoring your resume to any job in minutes.",
-    "loginTitle": "Welcome back",
-    "loginSubtitle": "Log in to continue optimizing your resume.",
-    "name": "Name",
-    "email": "Email",
-    "password": "Password",
-    "createAccount": "Create account",
-    "creatingAccount": "Creating account…",
-    "logIn": "Log in",
-    "loggingIn": "Logging in…",
-    "alreadyHaveAccount": "Already have an account?",
-    "noAccount": "Don't have an account?",
-    "signUp": "Sign up",
-    "accountCreated": "Account created!",
-    "invalidCredentials": "Invalid email or password.",
-    "signInFailedAfterRegister": "Account created, but sign-in failed. Please log in.",
-    "nameRequired": "Please enter your name.",
-    "emailInvalid": "Please enter a valid email.",
-    "passwordTooShort": "Password must be at least 8 characters.",
-    "passwordRequired": "Please enter your password."
   },
   "dashboard": {
     "title": "Your resumes",
@@ -226,9 +200,8 @@
     "viewResume": "View resume"
   },
   "errors": {
-    "UNAUTHORIZED": "You need to be logged in to do that.",
+    "UNAUTHORIZED": "You don't have access to do that.",
     "VALIDATION_ERROR": "Please check your input and try again.",
-    "EMAIL_ALREADY_EXISTS": "An account with this email already exists.",
     "NO_FILE_UPLOADED": "No file uploaded.",
     "FILE_TOO_LARGE": "File is too large. Maximum size is 10MB.",
     "UNSUPPORTED_FILE_TYPE": "Please upload a PDF or DOCX file.",

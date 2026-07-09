@@ -3,7 +3,6 @@ import { useTranslations } from "next-intl";
 const KNOWN_CODES = new Set([
   "UNAUTHORIZED",
   "VALIDATION_ERROR",
-  "EMAIL_ALREADY_EXISTS",
   "NO_FILE_UPLOADED",
   "FILE_TOO_LARGE",
   "UNSUPPORTED_FILE_TYPE",

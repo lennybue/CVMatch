@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 export type ApiErrorCode =
   | "UNAUTHORIZED"
   | "VALIDATION_ERROR"
-  | "EMAIL_ALREADY_EXISTS"
   | "NO_FILE_UPLOADED"
   | "FILE_TOO_LARGE"
   | "UNSUPPORTED_FILE_TYPE"
@@ -23,7 +22,6 @@ export type ApiErrorCode =
 const STATUS_BY_CODE: Record<ApiErrorCode, number> = {
   UNAUTHORIZED: 401,
   VALIDATION_ERROR: 400,
-  EMAIL_ALREADY_EXISTS: 409,
   NO_FILE_UPLOADED: 400,
   FILE_TOO_LARGE: 400,
   UNSUPPORTED_FILE_TYPE: 400,

@@ -1,17 +1,14 @@
 "use client";
 
-import { signOut } from "next-auth/react";
-import { useLocale, useTranslations } from "next-intl";
-import { LogOut, FileText, LayoutDashboard, Briefcase } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { FileText, LayoutDashboard, Briefcase } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { cn } from "@/lib/utils";
 
 export function DashboardNav({ userName }: { userName: string }) {
   const t = useTranslations("nav");
-  const locale = useLocale();
   const pathname = usePathname();
 
   const navLinks = [
@@ -49,14 +46,6 @@ export function DashboardNav({ userName }: { userName: string }) {
           </span>
           <LocaleSwitcher />
           <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label={t("logOut")}
-            onClick={() => signOut({ callbackUrl: `/${locale}` })}
-          >
-            <LogOut className="size-4" />
-          </Button>
         </div>
       </div>
     </header>

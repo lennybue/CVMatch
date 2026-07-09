@@ -1,12 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { auth } from "@/lib/auth";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { FileText, Target, Sparkles } from "lucide-react";
 
 export default async function Home() {
-  const session = await auth();
   const t = await getTranslations("home");
   const tNav = await getTranslations("nav");
 
@@ -16,21 +14,7 @@ export default async function Home() {
         <span className="text-lg font-semibold tracking-tight">CVMatch</span>
         <nav className="flex items-center gap-3">
           <LocaleSwitcher />
-          {session ? (
-            <Button nativeButton={false} render={<Link href="/dashboard">{tNav("dashboard")}</Link>} />
-          ) : (
-            <>
-              <Button
-                variant="ghost"
-                nativeButton={false}
-                render={<Link href="/login">{tNav("logIn")}</Link>}
-              />
-              <Button
-                nativeButton={false}
-                render={<Link href="/register">{tNav("getStarted")}</Link>}
-              />
-            </>
-          )}
+          <Button nativeButton={false} render={<Link href="/dashboard">{tNav("dashboard")}</Link>} />
         </nav>
       </header>
 
@@ -42,7 +26,7 @@ export default async function Home() {
         </h1>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground">{t("subtitle")}</p>
         <div className="mt-10 flex gap-3">
-          <Button size="lg" nativeButton={false} render={<Link href="/register">{t("cta")}</Link>} />
+          <Button size="lg" nativeButton={false} render={<Link href="/dashboard">{t("cta")}</Link>} />
         </div>
 
         <div className="mt-24 grid w-full gap-6 sm:grid-cols-3">

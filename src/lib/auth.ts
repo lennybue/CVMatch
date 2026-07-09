@@ -1,54 +1,44 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-import { z } from "zod";
+import { cache } from "react";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { routing } from "@/i18n/routing";
 
-const CredentialsSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
+const DEMO_USER_EMAIL = "demo@cvmatch.local";
+const DEMO_USER_NAME = "Demo User";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  session: { strategy: "jwt" },
-  pages: {
-    signIn: `/${routing.defaultLocale}/login`,
-  },
-  providers: [
-    Credentials({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(rawCredentials) {
-        const parsed = CredentialsSchema.safeParse(rawCredentials);
-        if (!parsed.success) return null;
+const SELECT = { id: true, email: true, name: true } satisfies Prisma.UserSelect;
 
-        const { email, password } = parsed.data;
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return null;
-
-        const isValid = await bcrypt.compare(password, user.passwordHash);
-        if (!isValid) return null;
-
-        return { id: user.id, email: user.email, name: user.name };
-      },
-    }),
-  ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user && token.id) {
-        session.user.id = token.id as string;
-      }
-      return session;
-    },
-  },
+/**
+ * No-login mode: every request resolves to the same shared demo user,
+ * auto-created on first access. Keeps the multi-tenant schema and every
+ * existing `session.user.id`-scoped query working unchanged — swap this
+ * back for a real auth check if per-user accounts come back later.
+ *
+ * Wrapped in React's cache() so a page + its layout calling auth() in the
+ * same request share one upsert instead of hitting the DB twice.
+ */
+export const auth = cache(async () => {
+  try {
+    const user = await prisma.user.upsert({
+      where: { email: DEMO_USER_EMAIL },
+      update: {},
+      create: { email: DEMO_USER_EMAIL, name: DEMO_USER_NAME, passwordHash: "" },
+      select: SELECT,
+    });
+    return { user };
+  } catch (error) {
+    // Concurrent cold starts (e.g. parallel build workers, or simultaneous
+    // first requests) can race to create the same row. If another one won
+    // the race, just read what it created instead of failing.
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      const user = await prisma.user.findUniqueOrThrow({
+        where: { email: DEMO_USER_EMAIL },
+        select: SELECT,
+      });
+      return { user };
+    }
+    throw error;
+  }
 });
